@@ -5,12 +5,20 @@ import { Images } from "assets/images"
 import { Colors } from "shared/styles/colors"
 import { Person, PersonHelper } from "shared/models/person"
 import { RollStateSwitcher } from "staff-app/components/roll-state/roll-state-switcher.component"
+import { RolllStateType } from "shared/models/roll"
 
 interface Props {
   isRollMode?: boolean
   student: Person
+  rollState: RolllStateType
+  setCurrentRollState?: (studentID: number, roll: string) => void
 }
-export const StudentListTile: React.FC<Props> = ({ isRollMode, student }) => {
+export const StudentListTile: React.FC<Props> = ({ isRollMode, student, setCurrentRollState, rollState }) => {
+  const updateRollState = (updateRoll: string) => {
+    if (student?.id) {
+      setCurrentRollState?.(student.id, updateRoll)
+    }
+  }
   return (
     <S.Container>
       <S.Avatar url={Images.avatar}></S.Avatar>
@@ -19,7 +27,10 @@ export const StudentListTile: React.FC<Props> = ({ isRollMode, student }) => {
       </S.Content>
       {isRollMode && (
         <S.Roll>
-          <RollStateSwitcher />
+          <RollStateSwitcher
+            updateRollState={updateRollState}
+            rollState={rollState}
+          />
         </S.Roll>
       )}
     </S.Container>
@@ -36,7 +47,6 @@ const S = {
     background-color: #fff;
     box-shadow: 0 2px 7px rgba(5, 66, 145, 0.13);
     transition: box-shadow 0.3s ease-in-out;
-
     &:hover {
       box-shadow: 0 2px 7px rgba(5, 66, 145, 0.26);
     }
